@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #f4efe3;
+  background: #030303;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #030303;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 90, 0, 0.14), transparent 28rem),
+    radial-gradient(circle at 90% 18%, rgba(139, 30, 15, 0.14), transparent 28rem),
+    linear-gradient(180deg, #030303 0%, #101010 42%, #030303 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  z-index: -1;
+}
+
+::selection {
+  background: #ff5a00;
+  color: #030303;
+}
+
+@layer components {
+  .nav-link {
+    @apply text-xs font-extrabold uppercase tracking-[0.22em] text-ash transition hover:text-phoenix;
+  }
+
+  .section-shell {
+    @apply relative px-5 py-24 lg:px-8;
+  }
+
+  .premium-card {
+    @apply rounded-2xl border border-bronze/25 bg-card/80 p-7 shadow-black/30 transition duration-300 hover:-translate-y-1 hover:border-phoenix/60 hover:shadow-ember-soft;
+  }
+
+  .gallery-card {
+    @apply relative min-h-56 overflow-hidden rounded-2xl border border-bronze/25 bg-[linear-gradient(135deg,#161616,#080808)] p-6 transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-phoenix/60 hover:shadow-ember-soft;
+  }
+
+  .gallery-card::before {
+    content: "";
+    @apply absolute inset-0 opacity-80 transition duration-300;
+    background:
+      radial-gradient(circle at 80% 15%, rgba(255, 179, 71, 0.2), transparent 28%),
+      radial-gradient(circle at 20% 90%, rgba(255, 90, 0, 0.22), transparent 36%),
+      linear-gradient(135deg, rgba(122, 62, 29, 0.28), transparent 48%);
+  }
+
+  .gallery-card:hover::before {
+    opacity: 1;
+  }
+}
+
+.hero-fallback {
+  background:
+    radial-gradient(circle at 18% 26%, rgba(255, 90, 0, 0.28), transparent 22rem),
+    radial-gradient(circle at 68% 52%, rgba(139, 30, 15, 0.22), transparent 28rem),
+    linear-gradient(135deg, #030303, #101010 46%, #030303);
+}
+
+.noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.floating-ember {
+  position: absolute;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 90, 0, 0.35), rgba(139, 30, 15, 0.12) 42%, transparent 70%);
+  filter: blur(12px);
+}
+
+.map-visual {
+  position: relative;
+  min-height: 26rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(122, 62, 29, 0.4);
+  background:
+    radial-gradient(circle at 22% 68%, rgba(255, 90, 0, 0.2), transparent 18%),
+    radial-gradient(circle at 76% 48%, rgba(255, 179, 71, 0.14), transparent 17%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    #070707;
+  background-size: auto, auto, 36px 36px, 36px 36px, auto;
+  box-shadow: 0 0 45px rgba(255, 90, 0, 0.12);
+}
+
+.route-line {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 52%;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #8b1e0f 8%, #ff5a00 34%, #ffb347 52%, #ff5a00 72%, transparent);
+  box-shadow: 0 0 24px rgba(255, 90, 0, 0.68);
+  transform: rotate(-9deg);
+}
+
+.route-line::after {
+  content: "";
+  position: absolute;
+  inset: -7px 16%;
+  border-top: 1px dashed rgba(255, 179, 71, 0.55);
+}
+
+.map-pin {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: #ff5a00;
+  box-shadow: 0 0 0 8px rgba(255, 90, 0, 0.12), 0 0 24px rgba(255, 90, 0, 0.8);
+}
+
+.map-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid rgba(255, 179, 71, 0.35);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
