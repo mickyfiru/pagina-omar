@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const HERO_VIDEO_URL = "/phoenix-hero.mp4";
+const HERO_VIDEO_URL = "/logo/phoenix-hero.mp4";
 const WHATSAPP_NUMBER = "XXXXXXXXXXX";
 const WHATSAPP_MESSAGE = "Hola Phoenix Tow Solution SPA, necesito asistencia vial.";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
@@ -263,19 +263,20 @@ function Hero() {
 
   return (
     <section id="inicio" className="relative flex min-h-screen overflow-hidden pt-20">
+      <div className="hero-fallback absolute inset-0" />
       <video
-        className="absolute inset-0 h-full w-full object-cover opacity-35"
+        className="absolute inset-0 z-[1] h-full w-full object-cover opacity-55"
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
         aria-hidden="true"
       >
         <source src={HERO_VIDEO_URL} type="video/mp4" />
       </video>
-      <div className="hero-fallback absolute inset-0" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,3,3,0.96),rgba(3,3,3,0.72),rgba(3,3,3,0.94))]" />
-      <div className="noise absolute inset-0 opacity-35" />
+      <div className="absolute inset-0 z-[2] bg-[linear-gradient(90deg,rgba(3,3,3,0.88),rgba(3,3,3,0.52),rgba(3,3,3,0.82))]" />
+      <div className="noise absolute inset-0 z-[3] opacity-25" />
       <motion.div
         className="floating-ember left-[12%] top-[26%]"
         animate={{ y: [0, -24, 0], opacity: [0.18, 0.38, 0.18] }}
