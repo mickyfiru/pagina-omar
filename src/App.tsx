@@ -1,27 +1,43 @@
-import { useMemo, useState } from "react";
+import { Children, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   BatteryCharging,
+  Cat,
   ChevronDown,
   Clock,
+  Dog,
   Fuel,
+  Instagram,
   MapPin,
   Menu,
   MessageCircle,
   Moon,
+  PawPrint,
   Route,
   ShieldCheck,
   Sparkles,
+  Truck,
+  UnlockKeyhole,
   Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
+import { setupVideoLoop } from "./utils/videoLoop";
 
 const HERO_VIDEO_URL = "/logo/phoenix-hero.mp4";
-const WHATSAPP_NUMBER = "XXXXXXXXXXX";
-const WHATSAPP_MESSAGE = "Hola Phoenix Tow Solution SPA, necesito asistencia vial.";
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+const PHOENIX_WHATSAPP_NUMBER = "+56966871828";
+const PET_STORE_WHATSAPP_NUMBER = "+56934193423";
+const INSTAGRAM_USERNAME = "phenixtow.cl";
+const PHOENIX_WHATSAPP_MESSAGE = "Hola Phoenix Tow Solutions SPA, necesito asistencia vial.";
+const PET_STORE_WHATSAPP_MESSAGE = "Hola, quiero consultar por alimentos para perros y gatos.";
+const PHOENIX_WHATSAPP_URL = `https://wa.me/${PHOENIX_WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  PHOENIX_WHATSAPP_MESSAGE,
+)}`;
+const PET_STORE_WHATSAPP_URL = `https://wa.me/${PET_STORE_WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  PET_STORE_WHATSAPP_MESSAGE,
+)}`;
+const INSTAGRAM_URL = `https://www.instagram.com/${INSTAGRAM_USERNAME}`;
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
@@ -55,6 +71,18 @@ const services = [
     description: "Entrega de combustible cuando tu vehículo se queda sin gasolina durante el trayecto.",
     icon: Fuel,
   },
+  {
+    title: "Apertura de automóviles",
+    description:
+      "Asistencia para apertura de vehículos en caso de llaves olvidadas, bloqueo accidental o emergencias similares.",
+    icon: UnlockKeyhole,
+  },
+  {
+    title: "Transporte",
+    description:
+      "Servicio de transporte y apoyo logístico según disponibilidad, orientado a traslados y necesidades en ruta.",
+    icon: Truck,
+  },
 ];
 
 const steps = [
@@ -75,11 +103,25 @@ const galleryItems = [
 const faqs = [
   {
     question: "¿Atienden 24/7?",
-    answer: "Sí. Phoenix Tow Solution SPA ofrece asistencia vial todos los días, a cualquier hora.",
+    answer: "Sí. Phoenix Tow Solutions SPA ofrece asistencia vial todos los días, a cualquier hora.",
   },
   {
     question: "¿Qué servicios ofrecen?",
-    answer: "Asistencia de batería, cambio de neumáticos y suministro de combustible.",
+    answer:
+      "Asistencia de batería, cambio de neumáticos, suministro de combustible, apertura de automóviles y transporte.",
+  },
+  {
+    question: "¿Realizan apertura de automóviles?",
+    answer:
+      "Sí. Se ofrece asistencia para apertura de vehículos en casos de bloqueo accidental o llaves olvidadas, según disponibilidad.",
+  },
+  {
+    question: "¿También ofrecen transporte?",
+    answer: "Sí. Phoenix Tow Solutions SPA también ofrece servicio de transporte y apoyo logístico según disponibilidad.",
+  },
+  {
+    question: "¿Qué es el emprendimiento asociado de alimentos para mascotas?",
+    answer: "Es un emprendimiento familiar asociado, con contacto independiente por WhatsApp.",
   },
   {
     question: "¿Cómo solicito asistencia?",
@@ -144,19 +186,49 @@ function WhatsAppButton({
   variant = "primary",
   className = "",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: "primary" | "secondary";
   className?: string;
 }) {
   const base =
-    "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-extrabold uppercase tracking-[0.18em] transition duration-300 focus:outline-none focus:ring-2 focus:ring-phoenix focus:ring-offset-2 focus:ring-offset-obsidian";
+    "inline-flex min-h-12 min-w-0 max-w-full flex-wrap items-center justify-center gap-2 rounded-full px-6 py-3 text-center text-xs font-extrabold uppercase leading-5 tracking-[0.1em] transition duration-300 focus:outline-none focus:ring-2 focus:ring-phoenix focus:ring-offset-2 focus:ring-offset-obsidian sm:text-sm sm:tracking-[0.18em] [&>svg]:shrink-0";
   const styles =
     variant === "primary"
       ? "bg-fire-gradient text-obsidian shadow-ember hover:-translate-y-0.5 hover:shadow-ember-strong"
       : "border border-bronze/60 bg-white/5 text-ivory hover:border-phoenix hover:bg-phoenix/10";
+  const content = Children.map(children, (child) =>
+    typeof child === "string" && child.trim().length > 0 ? (
+      <span className="min-w-0 max-w-full whitespace-normal break-words">{child.trim()}</span>
+    ) : (
+      child
+    ),
+  );
 
   return (
-    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className={`${base} ${styles} ${className}`}>
+    <a href={PHOENIX_WHATSAPP_URL} target="_blank" rel="noreferrer" className={`${base} ${styles} ${className}`}>
+      {content}
+    </a>
+  );
+}
+
+function InstagramLink({
+  children,
+  className = "",
+  iconOnly = false,
+}: {
+  children?: ReactNode;
+  className?: string;
+  iconOnly?: boolean;
+}) {
+  return (
+    <a
+      href={INSTAGRAM_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center justify-center gap-2 border border-bronze/45 bg-card/70 text-ivory transition duration-300 hover:-translate-y-0.5 hover:border-phoenix hover:bg-phoenix/10 hover:text-phoenix focus:outline-none focus:ring-2 focus:ring-phoenix focus:ring-offset-2 focus:ring-offset-obsidian ${className}`}
+      aria-label={iconOnly ? "Instagram de Phoenix Tow Solutions SPA" : undefined}
+    >
+      <Instagram className="h-5 w-5 shrink-0" />
       {children}
     </a>
   );
@@ -174,12 +246,12 @@ function Navbar() {
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
-        <a href="#inicio" className="group leading-none" aria-label="Phoenix Tow Solution SPA">
+        <a href="#inicio" className="group leading-none" aria-label="Phoenix Tow Solutions SPA">
           <span className="block text-base font-extrabold uppercase tracking-[0.24em] text-ivory group-hover:text-phoenix">
             Phoenix Tow
           </span>
           <span className="mt-1 block text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-ash">
-            Solution SPA
+            Solutions SPA
           </span>
         </a>
 
@@ -191,7 +263,8 @@ function Navbar() {
           ))}
         </div>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <InstagramLink iconOnly className="h-11 w-11 rounded-full" />
           <WhatsAppButton className="min-h-11 px-5 text-xs">
             <MessageCircle className="h-4 w-4" />
             WhatsApp 24/7
@@ -220,7 +293,7 @@ function Navbar() {
               <div>
                 <span className="block text-base font-extrabold uppercase tracking-[0.24em] text-ivory">Phoenix Tow</span>
                 <span className="mt-1 block text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-ash">
-                  Solution SPA
+                  Solutions SPA
                 </span>
               </div>
               <button
@@ -246,6 +319,19 @@ function Navbar() {
                   {link.label}
                 </motion.a>
               ))}
+              <motion.a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 border-b border-bronze/20 pb-5 text-xl font-extrabold uppercase tracking-[0.2em] text-ivory transition hover:text-phoenix"
+                onClick={() => setIsOpen(false)}
+                initial={{ opacity: 0, x: -18 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navLinks.length * 0.05 }}
+              >
+                <Instagram className="h-6 w-6 shrink-0 text-phoenix" />
+                Instagram
+              </motion.a>
               <WhatsAppButton className="mt-4 w-full">
                 <MessageCircle className="h-5 w-5" />
                 WhatsApp 24/7
@@ -259,15 +345,24 @@ function Navbar() {
 }
 
 function Hero() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const titleWords = "ASISTENCIA VIAL 24/7".split(" ");
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    const cleanup = setupVideoLoop(videoRef.current, 1.2, 8.6);
+
+    return cleanup;
+  }, []);
 
   return (
     <section id="inicio" className="relative flex min-h-screen overflow-hidden pt-20">
       <div className="hero-fallback absolute inset-0" />
       <video
+        ref={videoRef}
         className="absolute inset-0 z-[1] h-full w-full object-cover opacity-55"
         autoPlay
-        loop
         muted
         playsInline
         preload="auto"
@@ -289,7 +384,7 @@ function Hero() {
       />
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl items-center px-5 py-16 lg:px-8">
-        <div className="max-w-3xl text-center lg:text-left">
+        <div className="w-full min-w-0 max-w-[22rem] text-center sm:max-w-3xl lg:text-left">
           <motion.p
             className="mb-5 text-xs font-bold uppercase tracking-[0.38em] text-phoenix"
             initial="hidden"
@@ -297,10 +392,10 @@ function Hero() {
             variants={fadeUp}
             transition={{ duration: 0.65, delay: 0.2 }}
           >
-            Phoenix Tow Solution SPA
+            Phoenix Tow Solutions SPA
           </motion.p>
           <motion.h1
-            className="text-balance text-4xl font-extrabold uppercase tracking-[0.12em] text-ivory sm:text-6xl lg:text-7xl"
+            className="text-balance text-3xl font-extrabold uppercase tracking-[0.12em] text-ivory min-[380px]:text-4xl sm:text-6xl lg:text-7xl"
             variants={stagger}
             initial="hidden"
             animate="visible"
@@ -332,8 +427,9 @@ function Hero() {
             variants={fadeUp}
             transition={{ duration: 0.65, delay: 0.5 }}
           >
-            Phoenix Tow Solution SPA ofrece asistencia de batería, cambio de neumáticos y suministro de combustible en
-            rutas interurbanas. Atención rápida por WhatsApp, todos los días, a cualquier hora.
+            Phoenix Tow Solutions SPA ofrece asistencia de batería, cambio de neumáticos, suministro de combustible,
+            apertura de automóviles y transporte en rutas interurbanas. Atención rápida por WhatsApp, todos los días, a
+            cualquier hora.
           </motion.p>
           <motion.div
             className="mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start"
@@ -362,12 +458,12 @@ function Hero() {
             {trustItems.map((item) => (
               <motion.div
                 key={item.label}
-                className="rounded-2xl border border-bronze/25 bg-card/60 p-4 text-left backdrop-blur"
+                className="min-w-0 rounded-2xl border border-bronze/25 bg-card/60 p-4 text-left backdrop-blur"
                 variants={fadeUp}
                 transition={{ duration: 0.55 }}
               >
                 <item.icon className="mb-3 h-5 w-5 text-phoenix" />
-                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-ivory">{item.label}</p>
+                <p className="break-words text-xs font-extrabold uppercase tracking-[0.16em] text-ivory">{item.label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -584,6 +680,67 @@ function FAQ() {
   );
 }
 
+function PetFoodPromo() {
+  return (
+    <section id="emprendimiento-asociado" className="px-5 py-8 lg:px-8" aria-labelledby="pet-food-title">
+      <motion.div
+        className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-phoenix/25 bg-ivory px-6 py-12 text-obsidian shadow-ember-soft sm:px-10 lg:px-12"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.28 }}
+        variants={fadeUp}
+      >
+        <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full border border-phoenix/20" />
+        <div className="absolute bottom-8 right-8 hidden text-phoenix/10 lg:block">
+          <PawPrint className="h-40 w-40" />
+        </div>
+
+        <div className="relative z-10 grid gap-9 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="max-w-3xl">
+            <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-phoenix/35 bg-white/70 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-phoenix">
+              <PawPrint className="h-4 w-4" />
+              Pyme familiar
+            </span>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.34em] text-phoenix">
+              EMPRENDIMIENTO ASOCIADO
+            </p>
+            <h2
+              id="pet-food-title"
+              className="text-balance text-3xl font-extrabold uppercase tracking-[0.12em] text-obsidian sm:text-4xl"
+            >
+              ALIMENTOS PARA PERROS Y GATOS
+            </h2>
+            <p className="mt-5 text-base leading-8 text-neutral-700 sm:text-lg">
+              Promoción de emprendimiento familiar asociado. Consulta por alimentos para mascotas, con opciones para
+              perros y gatos.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+            <div className="flex gap-3 text-phoenix" aria-hidden="true">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-phoenix/30 bg-white/70">
+                <Dog className="h-7 w-7" />
+              </span>
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-phoenix/30 bg-white/70">
+                <Cat className="h-7 w-7" />
+              </span>
+            </div>
+            <a
+              href={PET_STORE_WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-12 min-w-0 max-w-full flex-wrap items-center justify-center gap-2 rounded-full bg-obsidian px-6 py-3 text-center text-xs font-extrabold uppercase leading-5 tracking-[0.1em] text-ivory shadow-ember transition duration-300 hover:-translate-y-0.5 hover:bg-card focus:outline-none focus:ring-2 focus:ring-phoenix focus:ring-offset-2 focus:ring-offset-ivory sm:text-sm sm:tracking-[0.16em]"
+            >
+              <MessageCircle className="h-5 w-5 text-phoenix" />
+              <span className="min-w-0 max-w-full whitespace-normal break-words">Consultar tienda de mascotas</span>
+            </a>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
 function FinalCTA() {
   const badges = ["24/7", "WhatsApp", "Interurbano", "Respuesta rápida"];
 
@@ -610,6 +767,17 @@ function FinalCTA() {
             <MessageCircle className="h-5 w-5" />
             CONTACTAR POR WHATSAPP
           </WhatsAppButton>
+          <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-bronze/25 bg-obsidian/55 p-5 backdrop-blur">
+            <h3 className="text-sm font-extrabold uppercase tracking-[0.18em] text-ivory">
+              También puedes seguirnos
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-ash">
+              Revisa novedades, servicios y actualizaciones en nuestro Instagram.
+            </p>
+            <InstagramLink className="mt-5 rounded-full px-5 py-3 text-xs font-extrabold uppercase tracking-[0.16em]">
+              Ver Instagram
+            </InstagramLink>
+          </div>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             {badges.map((badge) => (
               <span
@@ -631,11 +799,20 @@ function Footer() {
     <footer className="border-t border-bronze/20 bg-obsidian px-5 py-12 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_auto]">
         <div>
-          <h2 className="text-lg font-extrabold uppercase tracking-[0.22em] text-ivory">Phoenix Tow Solution SPA</h2>
+          <h2 className="text-lg font-extrabold uppercase tracking-[0.22em] text-ivory">Phoenix Tow Solutions SPA</h2>
           <p className="mt-4 text-ash">Asistencia vial 24/7</p>
-          <p className="mt-2 text-ash">Batería • Neumáticos • Combustible</p>
+          <p className="mt-2 text-ash">
+            Asistencia de batería, cambio de neumáticos, suministro de combustible, apertura de automóviles y
+            transporte.
+          </p>
           <p className="mt-2 text-ash">Cobertura interurbana</p>
           <p className="mt-2 text-ash">Contacto principal: WhatsApp</p>
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-ash">Síguenos en Instagram</p>
+            <InstagramLink className="rounded-xl px-4 py-3 text-xs font-extrabold uppercase tracking-[0.16em]">
+              @{INSTAGRAM_USERNAME}
+            </InstagramLink>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-x-10 gap-y-3 sm:grid-cols-3">
           {navLinks.map((link) => (
@@ -652,7 +829,7 @@ function Footer() {
 function FloatingWhatsAppButton() {
   return (
     <a
-      href={WHATSAPP_URL}
+      href={PHOENIX_WHATSAPP_URL}
       target="_blank"
       rel="noreferrer"
       className="fixed bottom-5 right-5 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-fire-gradient text-obsidian shadow-ember-strong transition hover:-translate-y-1 sm:w-auto sm:px-5"
@@ -680,6 +857,7 @@ function App() {
           <Coverage />
           <Gallery />
           <FAQ />
+          <PetFoodPromo />
           <FinalCTA />
         </main>
         <Footer />
