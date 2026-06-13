@@ -1,4 +1,4 @@
-import { Children, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Children, useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -26,8 +26,10 @@ import {
 import { setupVideoLoop } from "./utils/videoLoop";
 
 const HERO_VIDEO_URL = "/logo/phoenix-hero.mp4";
-const PHOENIX_WHATSAPP_NUMBER = "+56966871828";
-const PET_STORE_WHATSAPP_NUMBER = "+56934193423";
+const HERO_VIDEO_LOOP_START = 1.2;
+const HERO_VIDEO_LOOP_END = 8.6;
+const PHOENIX_WHATSAPP_NUMBER = "56966871828";
+const PET_STORE_WHATSAPP_NUMBER = "56934193423";
 const INSTAGRAM_USERNAME = "phenixtow.cl";
 const PHOENIX_WHATSAPP_MESSAGE = "Hola Phoenix Tow Solutions SPA, necesito asistencia vial.";
 const PET_STORE_WHATSAPP_MESSAGE = "Hola, quiero consultar por alimentos para perros y gatos.";
@@ -284,7 +286,7 @@ function Navbar() {
       <AnimatePresence>
         {isOpen ? (
           <motion.div
-            className="fixed inset-0 z-50 flex min-h-screen flex-col bg-obsidian/98 px-6 py-6 backdrop-blur-xl lg:hidden"
+            className="fixed inset-0 z-[80] flex min-h-screen flex-col bg-obsidian px-6 py-6 backdrop-blur-xl lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -351,7 +353,7 @@ function Hero() {
   useEffect(() => {
     if (!videoRef.current) return;
 
-    const cleanup = setupVideoLoop(videoRef.current, 1.2, 8.6);
+    const cleanup = setupVideoLoop(videoRef.current, HERO_VIDEO_LOOP_START, HERO_VIDEO_LOOP_END);
 
     return cleanup;
   }, []);
@@ -822,6 +824,13 @@ function Footer() {
           ))}
         </div>
       </div>
+      <div className="mx-auto mt-10 max-w-7xl border-t border-bronze/20 pr-24 pt-6 text-left text-xs leading-6 text-ash sm:pr-48 lg:pr-0">
+        <p>© 2026 Phoenix Tow Solutions SPA. Todos los derechos reservados.</p>
+        <p>
+          Página creada por{" "}
+          <span className="font-semibold text-ivory transition-colors duration-300 hover:text-phoenix">Dywev</span>.
+        </p>
+      </div>
     </footer>
   );
 }
@@ -832,7 +841,7 @@ function FloatingWhatsAppButton() {
       href={PHOENIX_WHATSAPP_URL}
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-5 right-5 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-fire-gradient text-obsidian shadow-ember-strong transition hover:-translate-y-1 sm:w-auto sm:px-5"
+      className="fixed bottom-5 right-5 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-fire-gradient text-obsidian shadow-ember-strong transition hover:-translate-y-1 sm:w-auto sm:px-5"
       aria-label="Contactar por WhatsApp"
     >
       <span className="absolute inset-0 rounded-full bg-phoenix/30 animate-ping" />
@@ -845,29 +854,24 @@ function FloatingWhatsAppButton() {
 }
 
 function App() {
-  const page = useMemo(
-    () => (
-      <>
-        <Navbar />
-        <main>
-          <Hero />
-          <Services />
-          <EmergencyCTA />
-          <HowItWorks />
-          <Coverage />
-          <Gallery />
-          <FAQ />
-          <PetFoodPromo />
-          <FinalCTA />
-        </main>
-        <Footer />
-        <FloatingWhatsAppButton />
-      </>
-    ),
-    [],
+  return (
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Services />
+        <EmergencyCTA />
+        <HowItWorks />
+        <Coverage />
+        <Gallery />
+        <FAQ />
+        <PetFoodPromo />
+        <FinalCTA />
+      </main>
+      <Footer />
+      <FloatingWhatsAppButton />
+    </>
   );
-
-  return page;
 }
 
 export default App;
